@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Каталог — PetShop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="catalog-header">
+            <a href="index.html" class="back-link">← Назад</a>
+            <h1>Каталог товаров</h1>
+            <p class="lead">Выберите лучшее для вашего питомца — корма, игрушки и аксессуары.</p>
+        </header>
+
+        <section class="catalog-controls">
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Все</button>
+                <button class="filter-btn" data-filter="food">Корма</button>
+                <button class="filter-btn" data-filter="toys">Игрушки</button>
+                <button class="filter-btn" data-filter="accessories">Аксессуары</button>
+            </div>
+
+            <div class="search">
+                <input id="search" type="search" placeholder="Поиск по названию..." />
+            </div>
+        </section>
+
+        <section class="products-grid" id="products">
+            <article class="product-card" data-category="food">
+                <img class="product-img" src="https://via.placeholder.com/320x200?text=Корм+1" alt="Корм 1">
+                <h3 class="product-title">Корм Premium 3кг</h3>
+                <div class="product-meta">
+                    <span class="price">1 200 ₽</span>
+                    <button class="btn add-cart">В корзину</button>
+                </div>
+            </article>
+
+            <article class="product-card" data-category="toys">
+                <img class="product-img" src="https://via.placeholder.com/320x200?text=Игрушка+1" alt="Игрушка 1">
+                <h3 class="product-title">Мячик-пищалка</h3>
+                <div class="product-meta">
+                    <span class="price">350 ₽</span>
+                    <button class="btn add-cart">В корзину</button>
+                </div>
+            </article>
+
+            <article class="product-card" data-category="accessories">
+                <img class="product-img" src="https://via.placeholder.com/320x200?text=Ошейник" alt="Ошейник">
+                <h3 class="product-title">Ошейник для собак</h3>
+                <div class="product-meta">
+                    <span class="price">450 ₽</span>
+                    <button class="btn add-cart">В корзину</button>
+                </div>
+            </article>
+
+            <article class="product-card" data-category="food">
+                <img class="product-img" src="https://via.placeholder.com/320x200?text=Корм+2" alt="Корм 2">
+                <h3 class="product-title">Консервы для котов 400г</h3>
+                <div class="product-meta">
+                    <span class="price">120 ₽</span>
+                    <button class="btn add-cart">В корзину</button>
+                </div>
+            </article>
+
+            <article class="product-card" data-category="toys">
+                <img class="product-img" src="https://via.placeholder.com/320x200?text=Игрушка+2" alt="Игрушка 2">
+                <h3 class="product-title">Плюшевая игрушка</h3>
+                <div class="product-meta">
+                    <span class="price">520 ₽</span>
+                    <button class="btn add-cart">В корзину</button>
+                </div>
+            </article>
+
+            <article class="product-card" data-category="accessories">
+                <img class="product-img" src="https://via.placeholder.com/320x200?text=Миска" alt="Миска">
+                <h3 class="product-title">Нержавеющая миска</h3>
+                <div class="product-meta">
+                    <span class="price">300 ₽</span>
+                    <button class="btn add-cart">В корзину</button>
+                </div>
+            </article>
+        </section>
+
+        <div id="toast" class="toast" aria-hidden="true"></div>
+    </div>
+
+    <script>
+        (function(){
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const products = Array.from(document.querySelectorAll('.product-card'));
+            const search = document.getElementById('search');
+            const toast = document.getElementById('toast');
+
+            function showToast(text) {
+                toast.textContent = text;
+                toast.classList.add('show');
+                toast.setAttribute('aria-hidden','false');
+                clearTimeout(toast._t);
+                toast._t = setTimeout(() => {
+                    toast.classList.remove('show');
+                    toast.setAttribute('aria-hidden','true');
+                }, 1600);
+            }
+
+            function applyFilter() {
+                const active = document.querySelector('.filter-btn.active');
+                const category = active ? active.dataset.filter : 'all';
+                const q = (search.value || '').trim().toLowerCase();
+
+                products.forEach(p => {
+                    const title = p.querySelector('.product-title').textContent.toLowerCase();
+                    const cat = p.dataset.category;
+                    const matchCat = category === 'all' || category === cat;
+                    const matchSearch = !q || title.includes(q);
+                    p.style.display = (matchCat && matchSearch) ? '' : 'none';
+                });
+            }
+
+            filterBtns.forEach(b => b.addEventListener('click', () => {
+                filterBtns.forEach(x => x.classList.remove('active'));
+                b.classList.add('active');
+                applyFilter();
+            }));
+
+            search.addEventListener('input', applyFilter);
+
+            document.querySelectorAll('.add-cart').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const title = btn.closest('.product-card').querySelector('.product-title').textContent;
+                    showToast('Добавлено в корзину: ' + title);
+                });
+            });
+
+            applyFilter();
+        })();
+    </script>
+</body>
+</html>
